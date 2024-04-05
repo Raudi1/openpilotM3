@@ -9,10 +9,10 @@ from openpilot.common.realtime import DT_CTRL
 #          model predictions above this speed can be unpredictable
 # V_CRUISE's are in kph
 V_CRUISE_MIN = 8
-V_CRUISE_MAX = 145
+V_CRUISE_MAX = 240
 V_CRUISE_UNSET = 255
-V_CRUISE_INITIAL = 40
-V_CRUISE_INITIAL_EXPERIMENTAL_MODE = 105
+V_CRUISE_INITIAL = 60
+V_CRUISE_INITIAL_EXPERIMENTAL_MODE = 110
 IMPERIAL_INCREMENT = 1.6  # should be CV.MPH_TO_KPH, but this causes rounding errors
 
 MIN_SPEED = 1.0
