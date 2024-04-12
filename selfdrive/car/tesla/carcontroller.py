@@ -1,10 +1,9 @@
 from openpilot.common.numpy_fast import clip
+from opendbc.can.packer import CANPacker
 from openpilot.selfdrive.car import apply_std_steer_angle_limits
 from openpilot.selfdrive.car.interfaces import CarControllerBase
 from openpilot.selfdrive.car.tesla.teslacan import TeslaCAN
-from openpilot.selfdrive.car.tesla.values import DBC, CANBUS, CarControllerParams, CAR
-
-from opendbc.can.packer import CANPacker
+from openpilot.selfdrive.car.tesla.values import DBC, CANBUS, CAR, CarControllerParams
 
 
 class CarController(CarControllerBase):
@@ -16,9 +15,10 @@ class CarController(CarControllerBase):
     self.pt_packer = CANPacker(DBC[CP.carFingerprint]['pt'])
     self.tesla_can = TeslaCAN(self.packer, self.pt_packer)
 
-    self.model3 = CP.carFingerprint == CAR.AP3_MODEL3
 
   def update(self, CC, CS, now_nanos):
+    model3_y = self.CP.carFingerprint in [CAR.TESLA_AP3_MODEL3, CAR.TESLA_AP3_MODELY]
+
     actuators = CC.actuators
     pcm_cancel_cmd = CC.cruiseControl.cancel
 
@@ -49,7 +49,7 @@ class CarController(CarControllerBase):
       max_accel = 0 if target_accel < 0 else target_accel
       min_accel = 0 if target_accel > 0 else target_accel
 
-      if self.model3:
+      if model3_y:
         counter = CS.das_control["DAS_controlCounter"]
         buses = [(self.packer, CANBUS.chassis)]
         can_sends.extend(self.tesla_can.create_longitudinal_commands(acc_state, target_speed, min_accel, max_accel, counter, buses))
@@ -64,7 +64,7 @@ class CarController(CarControllerBase):
 
     # Sent cancel request only if ACC is enabled
     if self.frame % 10 == 0 and pcm_cancel_cmd and CS.acc_enabled:
-      if self.model3:
+      if model3_y:
         counter = int(CS.sccm_right_stalk["SCCM_rightStalkCounter"] + 1) % 16
         can_sends.append(self.tesla_can.model3_cancel_acc(counter, 1))  # half up (cancel acc)
         can_sends.append(self.tesla_can.model3_cancel_acc((counter + 1) % 16, 0))  # to prevent neutral gear warning
