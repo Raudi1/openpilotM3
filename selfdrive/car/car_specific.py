@@ -187,7 +187,7 @@ class CarSpecificEvents:
       events.add(EventName.stockFcw)
     if CS.stockAeb:
       events.add(EventName.stockAeb)
-    if CS.vEgo > MAX_CTRL_SPEED:
+    if CS.vEgo > 240:
       events.add(EventName.speedTooHigh)
     if CS.cruiseState.nonAdaptive:
       events.add(EventName.wrongCruiseMode)
