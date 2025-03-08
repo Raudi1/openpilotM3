@@ -16,4 +16,3 @@
 [submodule "opendbc_repo"]
 	path = opendbc_repo
 	url = https://github.com/Raudi1/opendbc.git
-	branch = master
