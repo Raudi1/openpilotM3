@@ -18,7 +18,7 @@ jobs:
 
       - name: Update submodules
         run: |
-          git submodule update --remote --merge --allow-unrelated-histories
+          git submodule update --remote --merge
           git add .
           git commit -m "Update submodules to latest master" || echo "No changes to commit"
           git push
